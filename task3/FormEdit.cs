@@ -15,9 +15,19 @@ namespace task3
     {
         public Item item = new Item();
 
-        public FormEdit()
+        public FormEdit(params dynamic[] values)
         {
             InitializeComponent();
+
+            if(values.Length != 0)
+            {
+                item.Active = Convert.ToBoolean(values[0]);
+                item.Code = "" + values[1];
+                item.Name = "" + values[2];
+                item.Unit = "" + values[3];
+                item.Warranty = Convert.ToDecimal(values[4]);
+                item.Vendor = "" + values[5];
+            }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

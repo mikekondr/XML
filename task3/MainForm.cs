@@ -1,6 +1,4 @@
 using System.Data;
-using System.Linq.Expressions;
-using System.Security.Cryptography;
 
 namespace task3
 {
@@ -20,46 +18,48 @@ namespace task3
 
             if (frm.DialogResult == DialogResult.OK)
             {
-                dataGridView1.Rows.Add(new string[]
-                {
+                dataGridView1.Rows.Add(
                     frm.item.Active.ToString(),
                     frm.item.Name,
                     frm.item.Code,
                     frm.item.Unit,
                     frm.item.Vendor,
-                    frm.item.Warranty.ToString(),
-                });
-                modified = true;
+                    frm.item.Warranty.ToString()
+                );
+                Change_Mod(true);
             }
         }
 
         private void CopyItem(object sender, EventArgs e)
         {
             if (dataGridView1.CurrentRow == null)
-                MessageBox.Show("Не обрано рядок для редагування", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Не обрано рядок для копіювання", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
             {
-                DataGridViewRow row = dataGridView1.Rows[dataGridView1.Rows.Add()];
+                DataGridViewRow row = dataGridView1.CurrentRow;
 
-                FormEdit frm = new FormEdit();
-                frm.item.Active = Convert.ToBoolean(row.Cells["Active"].Value);
-                frm.item.Code = "" + row.Cells["Code"].Value;
-                frm.item.Name = "" + row.Cells["Description"].Value;
-                frm.item.Unit = "" + row.Cells["Unit"].Value;
-                frm.item.Warranty = Convert.ToDecimal(row.Cells["Warranty"].Value);
-                frm.item.Vendor = "" + row.Cells["Vendor"].Value;
+                FormEdit frm = new FormEdit(
+                    row.Cells["Active"].Value,
+                    row.Cells["Code"].Value,
+                    row.Cells["Description"].Value,
+                    row.Cells["Unit"].Value,
+                    row.Cells["Warranty"].Value,
+                    row.Cells["Vendor"].Value
+                );
                 frm.ShowDialog(this);
 
                 if (frm.DialogResult == DialogResult.OK)
                 {
-                    row.Cells["Active"].Value = frm.item.Active;
-                    row.Cells["Code"].Value = frm.item.Code;
-                    row.Cells["Description"].Value = frm.item.Name;
-                    row.Cells["Unit"].Value = frm.item.Unit;
-                    row.Cells["Warranty"].Value = frm.item.Warranty;
-                    row.Cells["Vendor"].Value = frm.item.Vendor;
+                    dataGridView1.Rows.Add(
+                        frm.item.Active.ToString(),
+                        frm.item.Name,
+                        frm.item.Code,
+                        frm.item.Unit,
+                        frm.item.Vendor,
+                        frm.item.Warranty.ToString()
+                    );
 
-                    modified = true;
+                    Change_Mod(true);
                 }
             }
         }
@@ -72,25 +72,27 @@ namespace task3
             {
                 DataGridViewRow row = dataGridView1.CurrentRow;
 
-                FormEdit frm = new FormEdit();
-                frm.item.Active = Convert.ToBoolean(row.Cells["Active"].Value);
-                frm.item.Code = "" + row.Cells["Code"].Value;
-                frm.item.Name = "" + row.Cells["Description"].Value;
-                frm.item.Unit = "" + row.Cells["Unit"].Value;
-                frm.item.Warranty = Convert.ToDecimal(row.Cells["Warranty"].Value);
-                frm.item.Vendor = "" + row.Cells["Vendor"].Value;
+                FormEdit frm = new FormEdit(
+                    row.Cells["Active"].Value,
+                    row.Cells["Code"].Value,
+                    row.Cells["Description"].Value,
+                    row.Cells["Unit"].Value,
+                    row.Cells["Warranty"].Value,
+                    row.Cells["Vendor"].Value
+                );
                 frm.ShowDialog(this);
 
                 if (frm.DialogResult == DialogResult.OK)
                 {
-                    row.Cells["Active"].Value = frm.item.Active;
-                    row.Cells["Code"].Value = frm.item.Code;
-                    row.Cells["Description"].Value = frm.item.Name;
-                    row.Cells["Unit"].Value = frm.item.Unit;
-                    row.Cells["Warranty"].Value = frm.item.Warranty;
-                    row.Cells["Vendor"].Value = frm.item.Vendor;
-
-                    modified = true;
+                    row.SetValues(
+                        frm.item.Active.ToString(),
+                        frm.item.Name,
+                        frm.item.Code,
+                        frm.item.Unit,
+                        frm.item.Vendor,
+                        frm.item.Warranty.ToString()
+                    );
+                    Change_Mod(true);
                 }
             }
         }
@@ -99,11 +101,23 @@ namespace task3
         {
             if (dataGridView1.SelectedRows.Count != 0)
             {
+                DialogResult answer = MessageBox.Show("Буде видалено " + dataGridView1.SelectedRows.Count + " рядків!\n\n" +
+                    "Справді продовжити?", "Увага!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                if (answer != DialogResult.Yes)
+                    return;
+
                 foreach (DataGridViewRow row in dataGridView1.SelectedRows)
                     dataGridView1.Rows.Remove(row);
             }
             else if (dataGridView1.CurrentRow != null)
             {
+                DialogResult answer = MessageBox.Show("Ряжок " + dataGridView1.CurrentRow + " буде видалено!\n\n" +
+                    "Справді продовжити?", "Увага!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                
+                if (answer != DialogResult.Yes)
+                    return;
+                
                 dataGridView1.Rows.Remove(dataGridView1.CurrentRow);
             }
             else
@@ -112,7 +126,7 @@ namespace task3
                 return;
             }
 
-            modified = true;
+            Change_Mod(true);
         }
 
         private void NewList(object sender, EventArgs e)
@@ -150,7 +164,7 @@ namespace task3
                 return;
             }
 
-            modified = false;
+            Change_Mod(false);
             dataGridView1.Rows.Clear();
             try
             {
@@ -173,21 +187,20 @@ namespace task3
             SaveFile();
         }
 
-        private bool CheckModified()
+        private void Exit(object sender, EventArgs e)
         {
-            if (modified)
-            {
-                DialogResult res = MessageBox.Show("Зберегти зміни перед очищенням?", "Увага",
-                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            this.Close();
+        }
 
-                if (res == DialogResult.Cancel)
-                    return false;
-                else if (res == DialogResult.Yes)
-                    if (!SaveFile())
-                        return false;
-            }
+        private void dataGridView1_DoubleClick(object sender, EventArgs e)
+        {
+            EditItem(sender, e);
+        }
 
-            return true;
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!CheckModified())
+                e.Cancel = true;
         }
 
         private bool SaveFile()
@@ -226,24 +239,31 @@ namespace task3
                 return false;
             }
 
-            modified = false;
+            Change_Mod(false);
             return true;
         }
 
-        private void Exit(object sender, EventArgs e)
+        private bool CheckModified()
         {
-            this.Close();
+            if (modified)
+            {
+                DialogResult res = MessageBox.Show("Зберегти зміни перед очищенням?", "Увага",
+                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+                if (res == DialogResult.Cancel)
+                    return false;
+                else if (res == DialogResult.Yes)
+                    if (!SaveFile())
+                        return false;
+            }
+
+            return true;
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void Change_Mod(bool mod)
         {
-            if (!CheckModified())
-                e.Cancel = true;
-        }
-
-        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-        {
-            modified = true;
+            modified = mod;
+            this.Text = "Товари" + (modified ? " *" : "");
         }
     }
 }

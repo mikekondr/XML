@@ -43,7 +43,7 @@
             Active = new DataGridViewCheckBoxColumn();
             Description = new DataGridViewTextBoxColumn();
             Code = new DataGridViewTextBoxColumn();
-            Unit = new DataGridViewComboBoxColumn();
+            Unit = new DataGridViewTextBoxColumn();
             Vendor = new DataGridViewTextBoxColumn();
             Warranty = new DataGridViewTextBoxColumn();
             openFileDialog1 = new OpenFileDialog();
@@ -159,42 +159,48 @@
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.Location = new Point(0, 49);
             dataGridView1.Name = "dataGridView1";
+            dataGridView1.ReadOnly = true;
             dataGridView1.RowTemplate.DefaultCellStyle.SelectionBackColor = Color.PaleTurquoise;
             dataGridView1.RowTemplate.DefaultCellStyle.SelectionForeColor = Color.Black;
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new Size(800, 401);
             dataGridView1.TabIndex = 1;
-            dataGridView1.CellEndEdit += dataGridView1_CellEndEdit;
+            dataGridView1.DoubleClick += dataGridView1_DoubleClick;
             // 
             // Active
             // 
             Active.HeaderText = "Актуальне";
             Active.Name = "Active";
+            Active.ReadOnly = true;
             Active.Width = 75;
             // 
             // Description
             // 
             Description.HeaderText = "Найменування";
             Description.Name = "Description";
+            Description.ReadOnly = true;
             Description.Width = 200;
             // 
             // Code
             // 
             Code.HeaderText = "Артикул";
             Code.Name = "Code";
+            Code.ReadOnly = true;
             // 
             // Unit
             // 
             Unit.HeaderText = "Од.вим.";
-            Unit.Items.AddRange(new object[] { "шт", "пак", "компл", "л", "г", "кг" });
             Unit.Name = "Unit";
+            Unit.ReadOnly = true;
             Unit.Resizable = DataGridViewTriState.True;
+            Unit.SortMode = DataGridViewColumnSortMode.NotSortable;
             Unit.Width = 50;
             // 
             // Vendor
             // 
             Vendor.HeaderText = "Виробник";
             Vendor.Name = "Vendor";
+            Vendor.ReadOnly = true;
             // 
             // Warranty
             // 
@@ -203,6 +209,7 @@
             Warranty.DefaultCellStyle = dataGridViewCellStyle1;
             Warranty.HeaderText = "Гарантія, міс";
             Warranty.Name = "Warranty";
+            Warranty.ReadOnly = true;
             // 
             // openFileDialog1
             // 
@@ -234,7 +241,7 @@
             создатьToolStripMenuItem.ImageTransparentColor = Color.Magenta;
             создатьToolStripMenuItem.Name = "создатьToolStripMenuItem";
             создатьToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.N;
-            создатьToolStripMenuItem.Size = new Size(180, 22);
+            создатьToolStripMenuItem.Size = new Size(169, 22);
             создатьToolStripMenuItem.Text = "Створити";
             создатьToolStripMenuItem.Click += NewList;
             // 
@@ -244,14 +251,14 @@
             открытьToolStripMenuItem.ImageTransparentColor = Color.Magenta;
             открытьToolStripMenuItem.Name = "открытьToolStripMenuItem";
             открытьToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.O;
-            открытьToolStripMenuItem.Size = new Size(180, 22);
+            открытьToolStripMenuItem.Size = new Size(169, 22);
             открытьToolStripMenuItem.Text = "Відкрити";
             открытьToolStripMenuItem.Click += OpenList;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(177, 6);
+            toolStripSeparator1.Size = new Size(166, 6);
             // 
             // сохранитьToolStripMenuItem
             // 
@@ -259,19 +266,19 @@
             сохранитьToolStripMenuItem.ImageTransparentColor = Color.Magenta;
             сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
             сохранитьToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
-            сохранитьToolStripMenuItem.Size = new Size(180, 22);
+            сохранитьToolStripMenuItem.Size = new Size(169, 22);
             сохранитьToolStripMenuItem.Text = "Зберегти";
             сохранитьToolStripMenuItem.Click += SaveList;
             // 
             // toolStripSeparator2
             // 
             toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new Size(177, 6);
+            toolStripSeparator2.Size = new Size(166, 6);
             // 
             // выходToolStripMenuItem
             // 
             выходToolStripMenuItem.Name = "выходToolStripMenuItem";
-            выходToolStripMenuItem.Size = new Size(180, 22);
+            выходToolStripMenuItem.Size = new Size(169, 22);
             выходToolStripMenuItem.Text = "Вихід";
             выходToolStripMenuItem.Click += Exit;
             // 
@@ -366,7 +373,7 @@
         private DataGridViewCheckBoxColumn Active;
         private DataGridViewTextBoxColumn Description;
         private DataGridViewTextBoxColumn Code;
-        private DataGridViewComboBoxColumn Unit;
+        private DataGridViewTextBoxColumn Unit;
         private DataGridViewTextBoxColumn Vendor;
         private DataGridViewTextBoxColumn Warranty;
     }
