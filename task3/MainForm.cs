@@ -112,7 +112,7 @@ namespace task3
             }
             else if (dataGridView1.CurrentRow != null)
             {
-                DialogResult answer = MessageBox.Show("Ряжок " + dataGridView1.CurrentRow + " буде видалено!\n\n" +
+                DialogResult answer = MessageBox.Show("Ряжок " + dataGridView1.CurrentRow.Index + " буде видалено!\n\n" +
                     "Справді продовжити?", "Увага!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 
                 if (answer != DialogResult.Yes)
